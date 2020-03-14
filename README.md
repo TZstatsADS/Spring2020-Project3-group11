@@ -6,7 +6,7 @@
 
 Term: Spring 2020
 
-+ Team ##
++ Team 11
 + Team members
 	+ team member 1
 	+ team member 2
