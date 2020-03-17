@@ -15,7 +15,8 @@ test <- function(fit.model,
   ###  - model selection 1 (baseline)
   ###  - other models
   ###  - parameter setting
-  ### Output: training model specification
+  
+  ### Output: training model predicting on test data
   
   library("gbm")
   library("adabag")

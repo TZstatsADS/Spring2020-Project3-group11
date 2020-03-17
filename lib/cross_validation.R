@@ -18,6 +18,9 @@ cv.function <- function(dat_train,
   ### - K: a number stands for K-fold CV
   ### - tuning parameters 
   
+  ## Output
+  ## the error of a set of parameter with cv
+  
   n <- dim(dat_train)[1]
   n.fold <- round(n/K, 0)
   set.seed(0)

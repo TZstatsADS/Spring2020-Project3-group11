@@ -12,7 +12,7 @@ train <- function(dat_train,             # a dataframe with feature without labe
   
   ### Input:
   ### dat_train - a dataframe with feature without label
-  ### label_train - the label of dat_train
+  ### label_train - class labels for training images
   
   ### below are model selections, the default is not to train with the models
   ### run.xgbm - selection 1 gbm (baseline)
