@@ -27,7 +27,7 @@ train <- function(dat_train,             # a dataframe with feature without labe
   library("xgboost")
   
   
-  ### fit selected model
+  ### fit selected models
   
   
   #### gradient boosting model
@@ -52,9 +52,8 @@ train <- function(dat_train,             # a dataframe with feature without labe
                          distribution="multinomial")
   }
   
-  ###############################################################
   
-  ####  adaboosting model
+  ####  adaboost model
   
   if(run.adaboost == T){
     
