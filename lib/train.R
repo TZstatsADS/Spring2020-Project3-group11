@@ -27,7 +27,7 @@ train <- function(dat_train,             # a dataframe with feature without labe
   library("xgboost")
   
   
-  ### fit selected models
+  ### fit selected model
   
   
   #### gradient boosting model
@@ -42,8 +42,8 @@ train <- function(dat_train,             # a dataframe with feature without labe
       ntrees = par$ntrees
       shrinkage = par$shrinkage
     }
-    fit.model <- gbm.fit(x = dat_train[,-ncol(dat_train)],
-                         y = dat_train[,ncol(dat_train)],
+    fit.model <- gbm.fit(x = dat_train,
+                         y = label_train,
                          interaction.depth = 3, 
                          shrinkage = shrinkage,
                          bag.fraction = 0.5,
@@ -51,9 +51,11 @@ train <- function(dat_train,             # a dataframe with feature without labe
                          verbose = FALSE,
                          distribution="multinomial")
   }
+
   
   
-  ####  adaboost model
+  
+  ####  adaboosting model
   
   if(run.adaboost == T){
     
@@ -65,8 +67,8 @@ train <- function(dat_train,             # a dataframe with feature without labe
     }
     
     # convert trainning data to data frame
-    train <- data.frame(label = factor(dat_train[,ncol(dat_train)]), 
-                        data = dat_train[,-ncol(dat_train)])
+    train <- data.frame(label = factor(label_train), 
+                        data = dat_train)
     
     # fit model
     fit.model <- boosting(label~.,data = train,
@@ -88,8 +90,8 @@ train <- function(dat_train,             # a dataframe with feature without labe
     }
     
     # create xgb.Dmatrix
-    train_matrix <- xgb.DMatrix(data=data.matrix(dat_train[,-ncol(dat_train)]),
-                                label=as,numeric(dat_train[,ncol(dat_train)])-1)
+    train_matrix <- xgb.DMatrix(data=data.matrix(dat_train),
+                                label=as.numeric(label_train)-1)
     
     # fit xgboost model
     fit.model <- xgb.train(data = train_matrix,

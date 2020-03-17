@@ -29,7 +29,7 @@ test <- function(fit.model,
     }else{
       ntrees = par$ntrees
     }
-    pred.prob <- predict(fit.model, newdata=as.data.frame(dat_test[,-ncol(dat_test)]),n.trees = ntrees,type= "response")
+    pred.prob <- predict(fit.model, newdata=as.data.frame(dat_test),n.trees = ntrees,type= "response")
     pred = apply(pred.prob,1,which.max )
   }
   
@@ -49,7 +49,7 @@ test <- function(fit.model,
     }else{
       ntrees = par$ntrees
     }
-    pred <- predict(fit.model, newdata=as.matrix(dat_test[,-ncol(dat_test)]), n.trees = ntrees)
+    pred <- predict(fit.model, newdata=as.matrix(dat_test), n.trees = ntrees)
     pred <- pred + 1
   }
   return(pred)
