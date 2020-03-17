@@ -22,7 +22,8 @@ test <- function(fit.model,
   library("xgboost")
   
   ### make predictions
-  ### make prediction  
+  
+  ## gbm (baseline)
   if (run.gbm ==T){
     if(is.null(par)){
       ntrees = 50
@@ -34,6 +35,7 @@ test <- function(fit.model,
   }
   
   
+  ## adaboost
   if(run.adaboost == T){
     
     # create test data frame
@@ -43,6 +45,7 @@ test <- function(fit.model,
   }
   
  
+  ## xgboost
   if (run.xgboost ==T){
     if(is.null(par)){
       ntrees = 100

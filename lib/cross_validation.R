@@ -2,12 +2,19 @@
 ### Cross Validation ###
 ########################
 
-### Author: Chengliang Tang
-### Project 3
 
-cv.function <- function(dat_train, K, gamma, cost){
+cv.function <- function(dat_train,
+                        label_train,
+                        run.gbm = F, 
+                        run.xgboost = F,
+                        run.adaboost = F,
+                        K = 5, 
+                        par = NULL){
   ### Input:
   ### - train data frame
+  ### - the label of dat_train
+  ### - the baseline model
+  ### - other models
   ### - K: a number stands for K-fold CV
   ### - tuning parameters 
   
@@ -20,14 +27,34 @@ cv.function <- function(dat_train, K, gamma, cost){
   for (i in 1:K){
     train.data <- dat_train[s != i,]
     test.data <- dat_train[s == i,]
+    train.label <- label_train[s != i]
+    test.label <- label_test[s == i,]
   
-    par <- list(gamma = gamma, cost = cost)
-    fit <- train(train.data, par)
+    ## choose model
     
-    pred <- test(fit, test.data)  
-    error <- mean(pred != test.data$categoryID) 
-    print(error)
-    cv.error[i] <- error
+    ## gbm (baseline)
+    if(run.gbm == T){
+      fit.model <- train(train.data, train.label, run.gbm = T, par = par)
+      pred <- test(fit.model, test.data, run.gbm = T, par=par)
+    }
+    
+    
+    ## adaboost
+    if(run.adaboost == T){
+      fit.model <- train(train.data, train.label, run.adaboost = T, par = par)
+      pred <- test(fit.model, test.data, run.adaboost = T, par = par)
+    }
+    
+    
+    ## xgboost
+    if(run.xgboost == T){
+      fit.model <- train(train.data, train.label, run.xgboost = T, par = par)
+      pred <- test(fit.model, test.data, run.xgboost = T, par = par) + 1
+    }
+    
+    
+    ## calculate cross validatoin error
+    cv.error[i] <- mean(pred != test.label)
     
   }			
   return(c(mean(cv.error),sd(cv.error)))
