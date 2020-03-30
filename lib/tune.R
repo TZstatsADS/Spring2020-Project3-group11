@@ -126,6 +126,44 @@ tune <- function(dat_train,
     
   }
   
+  
+  ## ksvm
+  if(run.ksvm == T){
+    # parameter pool
+    # C=?
+    #kernel=?
+    #kpar?  Note:"automatic only suits for Guassian and Laplacian Kernel
+    C <- c()
+    kernel <- c()
+    
+    # create matrix
+    error_matrix = matrix(NA,nrow = length(C), length(kernel))
+    rownames(error_matrix) <- paste(C)
+    colnames(error_matrix) <- paste(kernel)
+    
+    pred = predict(fit.model,dat_test)
+    for(i in 1:length(par$C)){
+      for(j in 1:length(par$kernel)){
+        fit.model = ksvm(as.matrix(train),
+                  label_train,
+                  kernel=kernel,
+                  kpar="automatic)",
+                  cross=5,
+                  C = C)
+        pred = predict(fit.model,dat_test)
+        error_matrix[i,j] <- mean(pred != label_test)
+      }
+    }
+    # best cv.error
+    cv_error =  min(error_matrix)
+    # best parameter
+    best_par = list(C = C[which(error_matrix == min(error_matrix), arr.ind = T)[1]],
+                    kernel = kernel[which(error_matrix == min(error_matrix), arr.ind = T)[2]])
+    
+  }
+  
+  
+  
   if(verbose == TRUE){
     print(error_matrix)
     print(sd_matrix)

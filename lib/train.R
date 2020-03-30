@@ -7,6 +7,7 @@ train <- function(dat_train,             # a dataframe with feature without labe
                   run.gbm = F,           # selection 1
                   run.xgboost = F,       # selection 2
                   run.adaboost = F,      # selection 3
+                  run.ksvm = F,
                   par = NULL             # parameter set
                   ){
   
@@ -22,9 +23,6 @@ train <- function(dat_train,             # a dataframe with feature without labe
   ### Output
   ### the fitted model of the selected models
   
-  library("gbm")
-  library("adabag")
-  library("xgboost")
   
   
   ### fit selected model
@@ -33,7 +31,7 @@ train <- function(dat_train,             # a dataframe with feature without labe
   #### gradient boosting model
   
   if(run.gbm == T){
-    
+    library("gbm")
     if(is.null(par)){
       ntrees = 100
       shrinkage = 0.1
@@ -58,7 +56,7 @@ train <- function(dat_train,             # a dataframe with feature without labe
   ####  adaboosting model
   
   if(run.adaboost == T){
-    
+    library("adabag")    
     # load parameter
     if(is.null(par)){
       mfinal <- 100
@@ -81,6 +79,7 @@ train <- function(dat_train,             # a dataframe with feature without labe
   #### xgboost model
   
   if(run.xgboost == T){
+    library("xgboost")
     if(is.null(par)){
       depth <- 5
       child_weight <- 3
@@ -102,6 +101,32 @@ train <- function(dat_train,             # a dataframe with feature without labe
                            nround = 100,
                            num_class = 22)
   }
+  
+  
+  #### ksvm model
+  if(run.ksvm == T){
+    library("kernlab")
+    # load parameter
+    if(is.null(par)){
+      kernel <- "rbfdot"
+      C <- 1
+    } else {
+      kernel <- par$kernel
+      C <- par$C
+    }
+    
+    # convert trainning data to data frame
+    train <- as.matrix(dat_train)
+    
+    # fit model
+    fit.model <- ksvm(as.matrix(train),
+                 label_train,
+                 kernel=kernel,
+                 kpar="automatic)",
+                 cross=5,
+                 C = C)
+  }
+  
   return(fit.model)
   
 }

@@ -3,13 +3,14 @@
 ########################
 
 
-cv.function <- function(dat_train,
-                        label_train,
-                        run.gbm = F, 
-                        run.xgboost = F,
-                        run.adaboost = F,
-                        K = 5, 
-                        par = NULL){
+cv <- function(dat_train,
+               label_train,
+               run.gbm = F, 
+               run.xgboost = F,
+               run.adaboost = F,
+               run.ksvm = F,
+               K = 5, 
+               par = NULL){
   ### Input:
   ### - train data frame
   ### - the label of dat_train
@@ -31,7 +32,7 @@ cv.function <- function(dat_train,
     train.data <- dat_train[s != i,]
     test.data <- dat_train[s == i,]
     train.label <- label_train[s != i]
-    test.label <- label_test[s == i,]
+    test.label <- label_train[s == i]
   
     ## choose model
     
@@ -60,5 +61,5 @@ cv.function <- function(dat_train,
     cv.error[i] <- mean(pred != test.label)
     
   }			
-  return(c(mean(cv.error),sd(cv.error)))
+  return(list(error = mean(cv.error), sd = sd(cv.error)))
 }

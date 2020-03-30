@@ -7,6 +7,7 @@ test <- function(fit.model,
                  run.gbm = F,
                  run.xgboost = F, 
                  run.adaboost = F, 
+                 run.ksvm = F,
                  par=NULL){
   
   ### Input: 
@@ -47,7 +48,7 @@ test <- function(fit.model,
   
  
   ## xgboost
-  if (run.xgboost ==T){
+  if(run.xgboost == T){
     if(is.null(par)){
       ntrees = 100
     }else{
@@ -56,5 +57,12 @@ test <- function(fit.model,
     pred <- predict(fit.model, newdata=as.matrix(dat_test), n.trees = ntrees)
     pred <- pred + 1
   }
+  
+  
+  ## ksvm
+  if(run.ksvm == T){
+    pred <- predict(fit.model,dat_test)
+  }
+  
   return(pred)
 }
