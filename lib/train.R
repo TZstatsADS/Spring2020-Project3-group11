@@ -8,6 +8,8 @@ train <- function(dat_train,             # a dataframe with feature without labe
                   run.xgboost = F,       # selection 2
                   run.adaboost = F,      # selection 3
                   run.ksvm = F,
+                  run.svm = F,
+                  run.logistic = F,
                   par = NULL             # parameter set
                   ){
   
@@ -34,7 +36,7 @@ train <- function(dat_train,             # a dataframe with feature without labe
     library("gbm")
     if(is.null(par)){
       ntrees = 100
-      shrinkage = 0.1
+      shrinkage = 0.05
     }
     else{
       ntrees = par$ntrees
@@ -109,7 +111,7 @@ train <- function(dat_train,             # a dataframe with feature without labe
     # load parameter
     if(is.null(par)){
       kernel <- "rbfdot"
-      C <- 1
+      C <- 50
     } else {
       kernel <- par$kernel
       C <- par$C
@@ -120,11 +122,31 @@ train <- function(dat_train,             # a dataframe with feature without labe
     
     # fit model
     fit.model <- ksvm(as.matrix(train),
-                 label_train,
+                 as.factor(label_train),
                  kernel=kernel,
                  kpar="automatic)",
                  cross=5,
                  C = C)
+  }
+  
+  #### svm model
+  if(run.svm == T){
+    library("e1071")
+    # load parameter
+    if(is.null(par)){
+      cost <- 0.001
+    } else {
+      cost <- par$cost
+    }
+    
+    # fit model
+    fit.model <- svm(x=dat_train, y=label_train, type="C", kernel="linear", cost=cost)
+  }
+  
+  #### multi-logistic model
+  if(run.logistic == T){
+    library("glmnet")
+    fit.model <- glmnet(as.matrix(dat_train), as.matrix(label_train), family = "multinomial")
   }
   
   return(fit.model)

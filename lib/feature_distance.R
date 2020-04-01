@@ -2,7 +2,7 @@
 ### Construct features and responses for training images  ###
 #############################################################
 
-feature <- function(input_list = fiducial_pt_list, index){
+feature_dist <- function(input_list = fiducial_pt_list, index){
   
   ### Construct process features for training images 
   

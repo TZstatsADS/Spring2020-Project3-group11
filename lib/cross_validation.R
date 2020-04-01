@@ -32,7 +32,7 @@ cv <- function(dat_train,
     train.data <- dat_train[s != i,]
     test.data <- dat_train[s == i,]
     train.label <- label_train[s != i]
-    test.label <- label_train[s == i]
+    test.label <- label_test[s == i]
   
     ## choose model
     

@@ -8,6 +8,7 @@ test <- function(fit.model,
                  run.xgboost = F, 
                  run.adaboost = F, 
                  run.ksvm = F,
+                 run.svm = F,
                  par=NULL){
   
   ### Input: 
@@ -19,16 +20,12 @@ test <- function(fit.model,
   
   ### Output: training model predicting on test data
   
-  library("gbm")
-  library("adabag")
-  library("xgboost")
-  
   ### make predictions
   
   ## gbm (baseline)
   if (run.gbm ==T){
     if(is.null(par)){
-      ntrees = 50
+      ntrees = 100
     }else{
       ntrees = par$ntrees
     }
@@ -39,7 +36,6 @@ test <- function(fit.model,
   
   ## adaboost
   if(run.adaboost == T){
-    
     # create test data frame
     test <- data.frame(data = dat_test)
     # predict
@@ -62,6 +58,16 @@ test <- function(fit.model,
   ## ksvm
   if(run.ksvm == T){
     pred <- predict(fit.model,dat_test)
+  }
+  
+  ## svm
+  if(run.svm == T){
+    pred <- predict(fit.model, dat_test)
+  }
+
+  # multinomial logistic
+  if(run.logistic == T){
+    pred <- predict(fit.model, newx = as.matrix(dat_test), type = "class", s=0.01)
   }
   
   return(pred)

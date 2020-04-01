@@ -8,6 +8,8 @@ tune <- function(dat_train,
                  run.gbm = F,
                  run.xgboost = F,
                  run.adaboost = F,
+                 run.ksvm = F,
+                 run.svm = F,
                  verbose = FALSE){
   
   ### tune parameter
@@ -21,16 +23,8 @@ tune <- function(dat_train,
   ### Output: 
   ###   best parameter
   
-  ### load libraries
-  library("gbm")
-  library("adabag")
-  library("xgboost")
-  
   ### load functions 
   source("../lib/cross_validation.R")
-  
-  
-  
   
   ## gbm model tune parameter
   
@@ -130,26 +124,22 @@ tune <- function(dat_train,
   ## ksvm
   if(run.ksvm == T){
     # parameter pool
-    # C=?
-    #kernel=?
-    #kpar?  Note:"automatic only suits for Guassian and Laplacian Kernel
-    C <- c()
-    kernel <- c()
+    # Note:"automatic only suits for Guassian and Laplacian Kernel
+    C <- c(1,5,10,20,50)
+    sigma <- c(0.0005,0.001,0.01,0.1,1)
+    
     
     # create matrix
-    error_matrix = matrix(NA,nrow = length(C), length(kernel))
+    error_matrix = matrix(NA,nrow = length(C), length(sigma))
     rownames(error_matrix) <- paste(C)
-    colnames(error_matrix) <- paste(kernel)
+    colnames(error_matrix) <-  paste(sigma)
     
-    pred = predict(fit.model,dat_test)
-    for(i in 1:length(par$C)){
-      for(j in 1:length(par$kernel)){
-        fit.model = ksvm(as.matrix(train),
-                  label_train,
-                  kernel=kernel,
-                  kpar="automatic)",
-                  cross=5,
-                  C = C)
+    for(i in 1:length(C)){
+      for(j in length(sigma)){
+        ksvm <- ksvm(as.matrix(dat_train),
+                     as.factor(label_train),kernel="rbfdot",
+                     kpar=list(sigma=sigma[j]),
+                     cross=5,C = C[i])
         pred = predict(fit.model,dat_test)
         error_matrix[i,j] <- mean(pred != label_test)
       }
@@ -158,11 +148,11 @@ tune <- function(dat_train,
     cv_error =  min(error_matrix)
     # best parameter
     best_par = list(C = C[which(error_matrix == min(error_matrix), arr.ind = T)[1]],
-                    kernel = kernel[which(error_matrix == min(error_matrix), arr.ind = T)[2]])
+                    sigma = sigma[which(error_matrix == min(error_matrix), arr.ind = T)[2]])
     
   }
   
-  
+  cost <- c(0.00001,0.0001,0.001,0.01,0.1,1,5)
   
   if(verbose == TRUE){
     print(error_matrix)
