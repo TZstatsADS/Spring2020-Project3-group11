@@ -65,7 +65,8 @@ library(tibble)
 ### Step 0 set work directories
 ```{r wkdir, eval=FALSE}
 set.seed(0)
-setwd("~/GitHub/Spring2020-Project3-group11/doc")
+p<-getwd()
+setwd(p)
 # here replace it with your own path or manually set it in RStudio to where this rmd file is located. 
 # use relative path for reproducibility
 ```
