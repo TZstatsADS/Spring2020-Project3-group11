@@ -254,7 +254,7 @@ if(run.baseline == T){
   tm_train=NA
   tm_train <- system.time(fit_train <- train(dat_train, label_train, run.gbm = T))
   tm_test = NA
-  tm_test <- system.time(fit_test <- test(fit.model, dat_test, run.gbm = T))
+  tm_test <- system.time(fit_test <- test(fit_train, dat_test, run.gbm = T))
   error <- mean(fit_test != label_test)
 }
 ```
