@@ -39,6 +39,9 @@ if(!require("gbm")){
 if(!require("xgboost")){
   install.packages("xgboost")
 }
+if(!require("adabag")){
+  install.packages("adabag")
+}
 if(!require("e1071")){
   install.packages("e1071")
 }
