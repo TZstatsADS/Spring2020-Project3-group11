@@ -10,6 +10,7 @@ tune <- function(dat_train,
                  run.adaboost = F,
                  run.ksvm = F,
                  run.svm = F,
+                 run.logistic = F,
                  verbose = FALSE){
   
   ### tune parameter
@@ -18,6 +19,7 @@ tune <- function(dat_train,
   ###   dat_train -  processed features from images 
   ###   label_train -  class labels for training images
   ###   run.xxxxxx - select models (gbm is the baseline)
+  ###   Note: multinomial logistic regression model don't have to tune
   ###   verbose - TRUE means print cv error while every loop
   
   ### Output: 
@@ -136,7 +138,7 @@ tune <- function(dat_train,
     
     for(i in 1:length(C)){
       for(j in length(sigma)){
-        ksvm <- ksvm(as.matrix(dat_train),
+        fit.model <- ksvm(as.matrix(dat_train),
                      as.factor(label_train),kernel="rbfdot",
                      kpar=list(sigma=sigma[j]),
                      cross=5,C = C[i])
@@ -152,7 +154,20 @@ tune <- function(dat_train,
     
   }
   
-  cost <- c(0.00001,0.0001,0.001,0.01,0.1,1,5)
+  ## svm
+  if(run.ksvm == T){
+    cost <- c(0.00001,0.0001,0.001,0.01,0.1,1,5)
+    error_matrix = rep(NA,length(cost))
+    for(i in 1:length(C)){
+      fit.model <- svm(x=dat_train, y=label_train, type="C", kernel="linear", cost=cost[i])
+      pred <- predict(fit.model, dat_test)
+      error_matrix[i] <- mean(pred != label_test)
+    }
+    # best cv.error
+    cv_error =  min(error_matrix)
+    # best parameter
+    best_par = list(cost = cost[which(error_matrix == min(error_matrix))])
+  }
   
   if(verbose == TRUE){
     print(error_matrix)

@@ -9,6 +9,7 @@ test <- function(fit.model,
                  run.adaboost = F, 
                  run.ksvm = F,
                  run.svm = F,
+                 run.logistic = F,
                  par=NULL){
   
   ### Input: 

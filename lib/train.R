@@ -4,9 +4,9 @@
 
 train <- function(dat_train,             # a dataframe with feature without label
                   label_train,           # the label of dat_train
-                  run.gbm = F,           # selection 1
-                  run.xgboost = F,       # selection 2
-                  run.adaboost = F,      # selection 3
+                  run.gbm = F,           
+                  run.xgboost = F,       
+                  run.adaboost = F,      
                   run.ksvm = F,
                   run.svm = F,
                   run.logistic = F,
