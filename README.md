@@ -30,7 +30,7 @@ Term: Spring 2020
 
 	
 **Contribution statement**: ([default](doc/a_note_on_contributions.md)) All team members contributed to this project. All team members approve our work presented in this GitHub repository including this contributions statement.
-+ Guo, Junyan: He is the group leader. He was in charge of writing main.rmd document. He conducted the baseline model(including tuning), xgboost model and adaboost model. He also took part in feature extraction. 
++ Guo, Junyan: He is the group leader. He was in charge of writing main.rmd document and function related R ducuments such as test.R, train.R, tune.R and cross_validation.R. He conducted the baseline model(including tuning), xgboost model and adaboost model. He also took part in feature extraction. 
 
 + Chen, Shuxin: She built models of multinomial logistic regression, SVM and RandomForest and tuned parameters in these models. She was in charge of writing README.md file and also joined feature extraction part. 
 
