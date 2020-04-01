@@ -118,8 +118,8 @@ run.test = TRUE # run evaluation on an independent test set
 run.tune = FALSE #tune parameter
 
 # baseline model control
-run.baseline.tuning = FALSE #
-run.baseline = FALSE #
+run.baseline.tuning = FALSE 
+run.baseline = TRUE
 
 # selected models (choose only one at a time)
 run.gbm = FALSE   # baseline model
@@ -252,17 +252,18 @@ print(par_best_baseline)
 ```{r final_train}
 if(run.baseline == T){
   tm_train=NA
-  tm_train <- system.time(fit_train <- train(dat_train, label_train, run.gbm = T))
+  tm_train <- system.time(fit_train_base <- train(dat_train, label_train, run.gbm = T))
   tm_test = NA
-  tm_test <- system.time(fit_test <- test(fit_train, dat_test, run.gbm = T))
-  error <- mean(fit_test != label_test)
+  tm_test <- system.time(fit_test_base <- test(fit_train_base, dat_test, run.gbm = T))
+  error <- mean(fit_test_base != label_test)
+  save(fit_train_base, file="../output/baseline_model.RData")
 }
 ```
 
 * evaluation
 ```{r}
 if(run.baseline == T){
-  accu <- mean(label_test == fit_test)
+  accu <- mean(label_test == fit_test_base)
   cat("The accuracy of model:", "is", accu*100, "%.\n")
 }
 ```
@@ -300,7 +301,7 @@ if(run.test == TRUE){
                                              run.svm = T,
                                              run.logistic = F))
   tm_test = NA
-  tm_test <- system.time(fit_test <- test(fit.model, 
+  tm_test <- system.time(fit_test <- test(fit_train, 
                                           dat_test,
                                           run.gbm = F,
                                           run.xgboost = F,       
@@ -309,6 +310,7 @@ if(run.test == TRUE){
                                           run.svm = T,
                                           run.logistic = F))
   error <- mean(fit_test != label_test)
+  save(fit_train, file="../output/model.RData")
   accu <- mean(fit_test == label_test)
   cat("The accuracy of model:", "is", accu*100, "%.\n")
 }
@@ -328,10 +330,10 @@ cat("Time for testing model=", tm_test[1], "s \n")
 ```{r}
 t1 <- tibble(True_label = label_test,
              Predict_label = fit_test)
-t2 <- tibble(Type = c("Time for constructing training features=",
-                      "Time for constructing testing features=",
-                      "Time for training model=",
-                      "Time for testing model="),
+t2 <- tibble(Type = c("Time for constructing training features",
+                      "Time for constructing testing features",
+                      "Time for training model",
+                      "Time for testing model"),
              Time = c(tm_feature_train[1],
                       tm_feature_test[1],
                       tm_train[1],
